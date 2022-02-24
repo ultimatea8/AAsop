@@ -1,0 +1,105 @@
+:root {
+    --liGray:#9c9c9c;
+    --drGray:#575757;
+    --drOrange:#d38900;
+
+    --tx-contrast: contrast(55%);
+    --tx-brightness: brightness(45%);
+    --bgg-global:var(--drGray);
+  }
+
+#t1{ background-color: var(--drGray);}
+#t2{ background-color: var(--liGray);}
+#t3{ background-color: var(--drOrange);}
+
+body {
+    background-color: var(--bgg-global);
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.MainContain{
+    background-color: var(--bgg-global);
+    filter: contrast(50%);
+    filter: brightness(150%);
+    margin: 2vw;
+    width: 95vw;
+    padding: 15px;
+    /* filter: invert(); */
+    /* filter: opacity(100%); */
+}
+
+/* Themeing the text */
+.aTitle{
+    color: var(--bgg-global);
+    font-size: 6vh;
+    font-weight: bold;
+    filter: var(--tx-contrast);
+    filter: var(--tx-brightness);
+}
+
+.aaTitle {
+    color: var(--bgg-global);
+    font-size: 2vh;
+    filter: var(--tx-contrast);
+    filter: var(--tx-brightness);
+}
+
+.textThemed{
+    color: var(--bgg-global);
+    filter: var(--tx-contrast);
+    filter: var(--tx-brightness);
+}
+
+
+/* Editing the theme selection area */
+.themed{
+    display: flex;
+    direction: rtl;
+    width: 95vw;
+}
+
+.tselect.active {
+    border: solid white;
+}
+.themed > div:hover {
+    border: dotted blue;
+}
+
+.themed > div {
+    --radius: 20px;
+    width: var(--radius);
+    height: var(--radius);
+    border: solid green;
+    border-width: 2px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+#fields{
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+}
+
+#TheImporter{ 
+    filter: contrast(105%);
+    filter: brightness(100%);
+    max-height: 98vh;
+    /* filter: var(--tx-contrast);
+    filter: var(--tx-brightness); */
+}
+
+#TextImport {
+    max-width: 100%;
+    min-width: 100%;
+    max-height: 99%;
+    min-height: 99%;
+    resize: none;
+    /* line-height: 85px; */
+}
+
+.ui-hilight {
+    border: 1px dotted black;
+    margin: 1em 0;
+    height: 40px;
+    width: 90%;
+}

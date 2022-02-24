@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>17</title>
+<!--<script type="text/javascript" src="../sigz.js"></script>-->
+<link rel="stylesheet" type="text/css" href="../styleme.css" />
+<script type="text/javascript">
+    document.getElementById("injured").onchange = function (){
+        alert('hiya !');
+    };
+(function() {
+})();
+</script>
+</head>
+<body>
+    What is the ADDRESS of the emergency?... What is your NAME?... What is your PHONE NUMBER?
+    <br/><hr/>
+<form id="theForm">
+        IS ANYONE INJURED? <select id="injured" onchange="injCHK()" autofocus>
+            <option value=""> </option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select><div id="pepinj" style="display: none">&nbsp; &nbsp; HOW MANY injured?
+            <input id="inum" name="pepinj" type="text" maxlength="2" style="width: 40px !important;" onchange ="injnumCHK()" /> 
+            </div>
+         <br/> <br/>    
+        IS ANYONE PINNED/TRAPPED? <select id="pinned" onchange="pinCHK()">
+            <option value=""> </option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select>
+         <br/> <br/>   
+        WAS ANYONE THROWN FROM THE VEHICLE(s)? <select id="thrown" onchange="troCHK()">
+            <option value=""> </option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select>
+          <br/> <br/>   
+        IS ANYTHING LEAKING? <select id="leak" onchange="lekCHK()">
+            <option value=""> </option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select> 
+          <br/> <br/>   
+        HOW MANY VEHICLES ARE INVOLVED?
+            <input id="vehinvo" name="drvin" type="text" maxlength="2" style="width: 40px !important;" onchange ="vinvoCHK()" /> 
+            
+          <br/> <br/> 
+         ARE ALL OF THE DRIVERS STILL THERE? <select id="drvthere" onchange="drvsCHK()">
+            <option value=""> </option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select>  
+</form>
+<hr/>
+<div style="text-align: center">
+<input type="button" onclick="resetform()" value="RESET" style="width: 100px; float:left;" />
+<textarea id="resultz" style="resize:none; width: 75%; height:100px; margin:0 auto; font-size: 1rem;"> </textarea></div>
+
+<script>
+formALL = document.getElementById("theForm").innerHTML;
+function injCHK() {
+    if (document.getElementById("injured").value == "Yes"){
+        document.getElementById("pepinj").style.display = "inline-block";
+        document.getElementById("injured").setAttribute("disabled", "disabled");
+    }     
+    else{
+        document.getElementById("pepinj").style.display = "none";
+        document.getElementById("resultz").innerHTML = "No INJS, ";
+        document.getElementById("injured").setAttribute("disabled", "disabled");
+    }}
+                    function injnumCHK(){
+                        var num = document.getElementById("inum").value;
+                        document.getElementById("resultz").innerHTML = num+" W/INJs, ";
+                        document.getElementById("inum").setAttribute("disabled", "disabled");
+                    }
+
+function pinCHK() {
+    if (document.getElementById("pinned").value == "Yes"){
+        document.getElementById("resultz").innerHTML = document.getElementById("resultz").innerHTML + " INDIVIDUALS PINNED ";
+        document.getElementById("pinned").setAttribute("disabled", "disabled");
+    }else {
+        document.getElementById("pinned").setAttribute("disabled", "disabled");
+    }}
+
+function troCHK() {
+    if (document.getElementById("thrown").value == "Yes"){
+        document.getElementById("resultz").innerHTML = document.getElementById("resultz").innerHTML + " INDIVIDUALS THROWN ";
+        document.getElementById("thrown").setAttribute("disabled", "disabled");
+    }else {
+        document.getElementById("thrown").setAttribute("disabled", "disabled");
+    }}
+
+function lekCHK() {
+    if (document.getElementById("leak").value == "Yes"){
+        document.getElementById("resultz").innerHTML = document.getElementById("resultz").innerHTML + " VEH(s) LEAK ";
+        document.getElementById("leak").setAttribute("disabled", "disabled");
+    }else {
+        document.getElementById("leak").setAttribute("disabled", "disabled");
+    }}
+
+function vinvoCHK() {
+    var num = document.getElementById("vehinvo").value;
+    document.getElementById("resultz").innerHTML = document.getElementById("resultz").innerHTML + num +" VEHS INVOLVED, "; 
+    document.getElementById("vehinvo").setAttribute("disabled", "disabled");
+}
+                    
+function drvsCHK() {
+    if (document.getElementById("drvthere").value == "Yes"){
+        document.getElementById("resultz").innerHTML = document.getElementById("resultz").innerHTML + " ALL DRIVERS STILL THERE ";
+        document.getElementById("drvthere").setAttribute("disabled", "disabled");
+    }else {
+        document.getElementById("resultz").innerHTML = document.getElementById("resultz").innerHTML + " ALL DRIVERS NOT THERE ";
+        document.getElementById("drvthere").setAttribute("disabled", "disabled");
+    }}
+function resetform(){
+    document.getElementById("theForm").innerHTML = formALL;
+    document.getElementById("resultz").innerHTML = "";
+}
+</script>
+</body>
+</html>

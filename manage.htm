@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Manage</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- <meta charset=utf-8>   -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js.map"></script>
+    <script type="text/javascript" src="js/bootstrap.bundle.js"></script>
+    <script type="text/javascript" src="js/bootstrap.bundle.js.map"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css.map" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css.map" />
+
+    <script type="text/javascript" src="js/sop/configSOP.js"></script>
+    <script type="text/javascript" src="js/func.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/stylee.css" />
+
+    <!-- DOCUMENT READY SCRIPT -->
+    <!-- DOCUMENT READY SCRIPT -->
+    <!-- DOCUMENT READY SCRIPT -->
+    <script>
+        $(function () {
+            $activeSOP = set["SOP"];
+            var sopList = Object.keys(SOPdb).toString();
+            // Set the list of sop versions
+            $("#versionOption").html(getSOPlist(sopList, $("input#versionOp.form-control").val($activeSOP)));
+            $("#sopOption").html(getSOPs(Object.keys(SOPdb[$("input#versionOp.form-control").val()][0]).toString()));
+
+            $("input#versionOp.form-control").click(function () { $(this).val(""); });
+            // When verson is selected, load procedures lists
+            $("input#versionOp.form-control").change(function () {
+                var sopLv0 = $("input#versionOp.form-control").val();
+                var StringSOP = Object.keys(SOPdb).toString();
+                var sopParse = StringSOP.split(",");
+                if (jQuery.inArray(sopLv0, sopParse) !== -1) {
+                    var SOPs = Object.keys(SOPdb[sopLv0][0]).toString();
+                    $("#sopOption").html(getSOPs(SOPs));
+                } else { alert("did not find it") }
+            });
+
+            $("input#sopOP.form-control").click(function () { $(this).select(); });
+            // When procedure is selcted, load lines 
+            $("input#sopOP.form-control").change(function () {
+                var outPUT = ""; $("#fields").html("");
+                var sopLv0 = $("input#versionOp.form-control").val();
+                var sopLv1 = $("input#sopOP.form-control").val();
+
+                var fCount = $("#fields .line").length; fCount++;
+                $sopLv2 = SOPdb[sopLv0][0][sopLv1];
+                for ($i = 0; $i < $sopLv2.length; $i++) {
+                    $.each($sopLv2[$i], function (index, val) {
+                        var indent = "";
+                        switch (index) {
+                            case "T":
+                                indent = "0";
+                                break;
+                            case "s":
+                                indent = "2";
+                                break;
+                            default:
+                                indent = "4";
+                                break;
+
+                        };
+                        outPUT += `<div class="line row">
+                                        <div class="input-group mb-3 tex col-2">
+                                            <select onchange="UpdateLineRow()" class="form-select" id="iGroup${fCount}">`;
+                        outPUT += OptionSelector(index);
+                        outPUT += `
+                                            </select>
+                                        </div>
+                                        <div class="form-floating mb-3 col-8">
+                                            <textarea rows="3" class="form-control" id="misc${$i}" placeholder="Yes/No"></textarea>
+                                            <label for="misc${$i}">${val}</label>
+                                        </div> 
+                                    </div>`;
+                        $("#fields").append(outPUT);
+
+                        outPUT = ""; fCount++;
+                    })
+                }
+                //  $sopLv2 = Object.keys($sopLv2Me);
+                UpdateLineRow();
+            });
+
+            // theme selector for different color themes.
+            $(".tselect").mouseup(function () {
+                // let root = document.documentElement;
+                $(".tselect").removeClass("active");
+                $(this).addClass("active");
+
+                $setBG = $(this).css("background-color");
+                document.documentElement.style.setProperty("--bgg-global", $setBG);
+
+                $setTX = $setBG;
+                // $("body").css("background-color");
+                document.documentElement.style.setProperty("--tex-global", $setTX);
+            })
+
+            // add import prep area changes, load the lines using 'InterpretImport'
+            $("#TextImport").change(function () {
+                var inFocus = $("#TextImport").val();
+                $(".ImportPrepArea").html(InterpretImport(inFocus));
+            });
+
+            // button click for Importer to append the new line(s) to the current Procedure.
+            $("#appendImportButton").click(function () {
+                var outPUt = $(".ImportPrepArea").html();
+                $("#fields").append(outPUt);
+                $('#TextImport').val('');
+                $(".ImportPrepArea").html("");
+                lineEditable();
+                UpdateLineRow();
+                $('#TheImporter #importerClose').click();
+
+            })
+
+            $("#newImportButton").click(function(){
+                var NewTypeName = prompt("Name of protocol/category:", "");
+                
+                $('#sopOP').val(NewTypeName);
+                var outPUt = $(".ImportPrepArea").html();
+                $("#fields").append(outPUt);
+                $('#TextImport').val('');
+                $(".ImportPrepArea").html("");
+                lineEditable();
+                UpdateLineRow();
+                $('#TheImporter #importerClose').click();
+            })
+            
+
+            // change the dropdowns to the correct selections
+            $(document).on("change", ".form-select", function () {
+                $myDecision = $(this).find(":selected").text();
+                $(this).html(OptionSelector($myDecision));
+                UpdateLineRow();
+                // $(this).attr("selected", "selected");
+            })
+        });
+    </script>
+
+</head>
+
+
+<!-- BODY AREA -->
+<!-- BODY AREA -->
+<!-- BODY AREA -->
+
+<body>
+    <div class="themed">
+        <div class="tselect active" id="t1"></div>
+        <div class="tselect" id="t2"></div>
+        <div class="tselect" id="t3"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="TheImporter" tabindex="-1" aria-labelledby="TheImporterLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="TheImporterLabel">Importer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <textarea name="TextImport" id="TextImport"></textarea>
+                        </div>
+                        <div class="ImportPrepArea col-6"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="appendImportButton" type="button" class="btn btn-primary">Append</button>
+                    <button id="importerClose" type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="$('#TextImport').val('')">Cancel</button>
+                    <button id="newImportButton" type="button" class="btn btn-primary">Import New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container area -->
+    <div class="MainContain container-fluid rounded-3 ">
+        <div class="row">
+            <!-- Top title -->
+            <div class="row justify-content-center">
+                <div class="col-7 text-center mb-1">
+                    <div class="aTitle">AA S.O.P</div>
+                    <div class="aaTitle">(Agency Adherence Standard Operating Procedures)</div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        <!----------------------------------------------------------------------------------- -->
+
+        <!-- Importer -->
+        <button id="imported" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#TheImporter">
+            Importer
+        </button>
+
+        <div class="row">
+            <div class="col-8">
+                <!-- Version naming -->
+                <div class="row">
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Version</span>
+                        <div class="col-auto">
+                            <input class="form-control" list="versionOption" id="versionOp"
+                                placeholder="Type to search..." />
+                            <datalist id="versionOption">
+                            </datalist>
+                        </div>
+
+                        <div id="sopType"></div>
+                    </div>
+                </div>
+
+
+                <!-- Nav and Saving Area -->
+                <nav class="navbar navbar-expand-md navbar-light bg-light mb-sm-2">
+                    <div class="container">
+
+                        <!-- <label for="exampleDataList" class="form-label">Datalist example</label> -->
+                        <div class="sopS flex-fill">
+                            <div class="col-auto">
+                                <input class="form-control" list="sopOption" id="sopOP" placeholder="Type to search...">
+                                <datalist id="sopOption">
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <form class="flex">
+                            <button class="btn btn-success" type="save">Save</button>
+                        </form>
+                    </div>
+                </nav>
+
+                <!-- Managing fields -->
+                <div id="fields" class="row sortables">
+                    <!-- <div id="0" class="line row" style="dim splay:none;">
+                <div class="input-group mb-3 tex col-2">
+                    <select class="form-select" id="iGroup${fCount}">
+                        <option value="T" selected>T</option>
+                        <option value="s">s</option>
+                        <option value="D">D</option>
+                        <option value="i">i</option>
+                        <option value="Q">Q</option>
+                    </select>
+                </div>
+                <div class="form-floating mb-3 col-10">
+                    <input type="text" class="form-control" id="wpns" placeholder="Yes/No">
+                    <label for="wpns">Any weapons involved?</label>
+                </div> 
+            </div>  -->
+                </div>
+                <!-- add a block to edit -->
+                <div class="d-grid gap-2">
+                    <button id="addBlock" class="btn btn-primary" type="button">ADD</button>
+                </div>
+
+                <div class="test"> test area </div>
+
+            </div>
+            <div class="col-4 order-first textThemed">Definition</div>
+
+        </div>
+    </div>
+
+
+    <script>
+        $("#addBlock").click(function () {
+            $("#fields").append(addLine);
+            UpdateLineRow();
+        })
+        $('#TheImporter').on('shown.bs.modal', function () {
+            $("#TextImport").focus();
+        })
+
+        $(document).on("mouseenter","div.line.row",function(){
+            $(this).children(".removeLineRow").show();
+            $(this).children(".moveLineRow").show();
+        })
+        $(document).on("mouseleave","div.line.row",function(){
+            $(this).children(".removeLineRow").hide();
+            $(this).children(".moveLineRow").hide();
+        })
+        $(document).on("click", ".removeLineRow",function(){
+            $(this).parent(".line.row").fadeOut(500,function(){
+               $(this).remove()});
+        })
+
+        /****
+            var myModal = new bootstrap.Modal(document.getElementById('TheImporter'), {
+            });
+            $("button#imported").click(function(){myModal.show()});
+        ***/
+    </script>
+</body>
+
+</html>
